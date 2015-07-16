@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[无题 . 磊磊]]></title>
+  <subtitle><![CDATA[苦恼无益 后知后觉]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://wutill.com/"/>
+  <updated>2015-07-16T09:42:53.284Z</updated>
+  <id>http://wutill.com/</id>
+  
+  <author>
+    <name><![CDATA[LeiLei]]></name>
+    <email><![CDATA[lengyuzlg@163.com]]></email>
+  </author>
+  
+  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[树莓派安装bypy百度云同步客户端]]></title>
+    <link href="http://wutill.com/2015/07/16/bypy/"/>
+    <id>http://wutill.com/2015/07/16/bypy/</id>
+    <published>2015-07-16T09:06:36.000Z</published>
+    <updated>2015-07-16T09:41:31.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="前因">前因</h2>
+<p>  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用<br>Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">IP=`ifconfig|grep "inet " | cut -d: -f2 | awk '{print $1}' | grep -v "^127."` </div><div class="line">echo "" &gt;/data/ip/$IP.txt</div><div class="line">/usr/bin/python  /data/bypy/bypy.py upload /data/ip/  &gt;&gt;/tmp/test    </div><div class="line">以上代码加到 /etc/rc.local exit 0前面</div></pre></td></tr></table></figure>
+
+<h2 id="问题">问题</h2>
+<p>怎么就不通过，最后发现报错</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">*WARNING*: Cannot detect the system encoding, assume it's 'UTF-8'</div><div class="line">Token file: '//.bypy/bypy.json'</div><div class="line">Hash Cache file: '//.bypy/bypy.pickle'</div><div class="line">App root path at Baidu Yun '/apps/bypy'</div><div class="line">sys.stdin.encoding = None</div><div class="line">sys.stdout.encoding = None</div><div class="line">sys.stderr.encoding = ANSI_X3.4-1968</div><div class="line">----</div><div class="line"></div><div class="line">&lt;E&gt; [13:13:52] Error while loading baidu pcs token:</div><div class="line">&lt;E&gt; [13:13:52] Traceback (most recent call last):</div><div class="line">  File "/data/bypy/bypy.py", line 1480, in __load_local_json</div><div class="line">    with open(TokenFilePath, 'rb') as infile:</div><div class="line">IOError: [Errno 2] No such file or directory: u'//.bypy/bypy.json'</div><div class="line"></div><div class="line">Please visit:</div><div class="line">https://openapi.baidu.com/oauth/2.0/authorize?scope=basic+netdisk&amp;redirect_uri=oob&amp;response_type=code&amp;client_id=q8WE4EpCsau1oS</div><div class="line">And authorize this app</div><div class="line">Paste the Authorization Code here within 10 minutes.</div><div class="line">Press [Enter] when you are done</div><div class="line">&lt;E&gt; [13:13:52] Exception occurred:</div><div class="line">Traceback (most recent call last):</div><div class="line">  File "/data/bypy/bypy.py", line 3421, in main</div><div class="line">    verbose = args.verbose, debug = args.debug)</div><div class="line">  File "/data/bypy/bypy.py", line 1172, in __init__</div><div class="line">    result = self.__auth()</div><div class="line">  File "/data/bypy/bypy.py", line 1592, in __auth</div><div class="line">    return self.__server_auth()</div><div class="line">  File "/data/bypy/bypy.py", line 1556, in __server_auth</div><div class="line">    auth_code = ask(msg).strip()</div><div class="line">  File "/data/bypy/bypy.py", line 363, in askc</div><div class="line">    return raw_input()</div><div class="line">EOFError: EOF when reading a line</div></pre></td></tr></table></figure>
+
+<h2 id="解决">解决</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TokenFilePath = ConfigDir + os.sep + 'bypy.json'</div><div class="line">HashCachePath = ConfigDir + os.sep + 'bypy.pickle'</div><div class="line">改为</div><div class="line">TokenFilePath = '/root/.bypy/bypy.json'</div><div class="line">HashCachePath = '/root/.bypy/bypy.pickle'</div></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="前因">前因</h2>
+<p>  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用<br>Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。</p>
+<h2 id="代码">代码</h2>
+<fig]]>
+    </summary>
+    
+      <category term="树莓派" scheme="http://wutill.com/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+      <category term="python" scheme="http://wutill.com/categories/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <link href="http://wutill.com/2015/07/16/hello-world/"/>
+    <id>http://wutill.com/2015/07/16/hello-world/</id>
+    <published>2015-07-16T09:05:36.000Z</published>
+    <updated>2015-07-16T09:05:36.000Z</updated>
+    <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">trobuleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2>
+<h3 id="Create_a_new_post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[linux   strace命令]]></title>
+    <link href="http://wutill.com/2015/01/29/strace/"/>
+    <id>http://wutill.com/2015/01/29/strace/</id>
+    <published>2015-01-29T06:43:03.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="追踪php">追踪php</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">[root@centos html]<span class="preprocessor"># strace -c php test.php </span></div><div class="line">ok,选择数据库成功！% time     seconds  usecs/call     calls    errors syscall</div><div class="line">------ ----------- ----------- --------- --------- ----------------</div><div class="line"> <span class="number">21.80</span>    <span class="number">0.011022</span>          <span class="number">16</span>       <span class="number">704</span>           read</div><div class="line"> <span class="number">16.92</span>    <span class="number">0.008556</span>          <span class="number">33</span>       <span class="number">258</span>        <span class="number">30</span> open</div><div class="line"> <span class="number">11.78</span>    <span class="number">0.005958</span>          <span class="number">25</span>       <span class="number">239</span>           close</div><div class="line">  <span class="number">8.30</span>    <span class="number">0.004198</span>          <span class="number">18</span>       <span class="number">231</span>           munmap</div><div class="line">  <span class="number">7.77</span>    <span class="number">0.003931</span>          <span class="number">10</span>       <span class="number">404</span>           mmap</div><div class="line">  <span class="number">6.29</span>    <span class="number">0.003181</span>          <span class="number">12</span>       <span class="number">268</span>           fstat</div><div class="line">  <span class="number">4.40</span>    <span class="number">0.002223</span>          <span class="number">45</span>        <span class="number">49</span>        <span class="number">38</span> ioctl</div><div class="line">  <span class="number">3.96</span>    <span class="number">0.002000</span>        <span class="number">2000</span>         <span class="number">1</span>           execve</div><div class="line">  <span class="number">3.90</span>    <span class="number">0.001972</span>          <span class="number">14</span>       <span class="number">143</span>           mprotect</div><div class="line">  <span class="number">3.56</span>    <span class="number">0.001800</span>          <span class="number">25</span>        <span class="number">71</span>        <span class="number">15</span> stat</div><div class="line">  <span class="number">1.98</span>    <span class="number">0.001000</span>         <span class="number">125</span>         <span class="number">8</span>           poll</div><div class="line">  <span class="number">1.98</span>    <span class="number">0.001000</span>        <span class="number">1000</span>         <span class="number">1</span>           shutdown</div><div class="line">  <span class="number">1.89</span>    <span class="number">0.000958</span>          <span class="number">74</span>        <span class="number">13</span>         <span class="number">2</span> futex</div><div class="line">  <span class="number">1.20</span>    <span class="number">0.000607</span>          <span class="number">76</span>         <span class="number">8</span>           rt_sigaction</div><div class="line">  <span class="number">1.17</span>    <span class="number">0.000591</span>          <span class="number">12</span>        <span class="number">48</span>         <span class="number">3</span> lseek</div><div class="line">  <span class="number">1.06</span>    <span class="number">0.000538</span>          <span class="number">54</span>        <span class="number">10</span>           fcntl</div><div class="line">  <span class="number">0.68</span>    <span class="number">0.000343</span>         <span class="number">343</span>         <span class="number">1</span>           getsockopt</div><div class="line">  <span class="number">0.36</span>    <span class="number">0.000184</span>          <span class="number">31</span>         <span class="number">6</span>         <span class="number">5</span> connect</div><div class="line">  <span class="number">0.31</span>    <span class="number">0.000155</span>          <span class="number">39</span>         <span class="number">4</span>           getdents</div><div class="line">  <span class="number">0.26</span>    <span class="number">0.000132</span>           <span class="number">4</span>        <span class="number">31</span>           brk</div><div class="line">  <span class="number">0.24</span>    <span class="number">0.000123</span>          <span class="number">31</span>         <span class="number">4</span>           sendto</div><div class="line">  <span class="number">0.18</span>    <span class="number">0.000093</span>          <span class="number">47</span>         <span class="number">2</span>           statfs</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">4</span>           write</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>        <span class="number">17</span>         <span class="number">8</span> lstat</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">6</span>           rt_sigprocmask</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">5</span>         <span class="number">3</span> access</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">3</span>           alarm</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">8</span>           socket</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">2</span>           recvfrom</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">6</span>           recvmsg</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">2</span>           bind</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">2</span>           getsockname</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">5</span>           setsockopt</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           clone</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">2</span>           uname</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">3</span>           getcwd</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           getrlimit</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">3</span>           times</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           getuid</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           arch_prctl</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           gettid</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           set_tid_address</div><div class="line">  <span class="number">0.00</span>    <span class="number">0.000000</span>           <span class="number">0</span>         <span class="number">1</span>           set_robust_list</div><div class="line">------ ----------- ----------- --------- --------- ----------------</div><div class="line"><span class="number">100.00</span>    <span class="number">0.050565</span>                  <span class="number">2579</span>       <span class="number">104</span> total</div></pre></td></tr></table></figure>
+
+<h2 id="参考网站">参考网站</h2>
+<p>(linux   strace命令详解  进程跟踪 )[<a href="http://blog.sina.com.cn/s/blog_6e07f1eb0100t7rg.html" target="_blank" rel="external">http://blog.sina.com.cn/s/blog_6e07f1eb0100t7rg.html</a>]</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="追踪php">追踪php</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div]]>
+    </summary>
+    
+      <category term="命令" scheme="http://wutill.com/tags/%E5%91%BD%E4%BB%A4/"/>
+    
+      <category term="工具" scheme="http://wutill.com/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="linux" scheme="http://wutill.com/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Can't connect to MySQL server]]></title>
+    <link href="http://wutill.com/2015/01/29/Can-t-connect-to-MySQL-server/"/>
+    <id>http://wutill.com/2015/01/29/Can-t-connect-to-MySQL-server/</id>
+    <published>2015-01-29T03:17:51.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="问题">问题</h2>
+<p>wordpress更换服务器后，出现can’t connect to MySQL server using ‘’ (13)的错误，<br>结果是 SELinux 不让 httpd 访问外网，一开始还以为是iptables造成的，关闭之后发现还是不行。</p>
+<h2 id="原因">原因</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#getsebool -a | grep httpd</span></div><div class="line">[root@centos]<span class="preprocessor">#getsebool -a | grep httpd</span></div><div class="line">allow_httpd_anon_write --&gt; off</div><div class="line">allow_httpd_mod_auth_ntlm_winbind --&gt; off</div><div class="line">allow_httpd_mod_auth_pam --&gt; off</div><div class="line">allow_httpd_sys_script_anon_write --&gt; off</div><div class="line">httpd_builtin_scripting --&gt; on</div><div class="line">httpd_can_check_spam --&gt; off</div><div class="line">httpd_can_network_connect --&gt; off</div><div class="line">httpd_can_network_connect_cobbler --&gt; off</div><div class="line">httpd_can_network_connect_db --&gt; off</div><div class="line">httpd_can_network_memcache --&gt; off</div><div class="line">httpd_can_network_relay --&gt; off</div><div class="line">httpd_can_sendmail --&gt; off</div><div class="line">httpd_dbus_avahi --&gt; on</div><div class="line">httpd_enable_cgi --&gt; on</div><div class="line">httpd_enable_ftp_server --&gt; off</div><div class="line">httpd_enable_homedirs --&gt; off</div><div class="line">httpd_execmem --&gt; off</div><div class="line">httpd_read_user_content --&gt; off</div><div class="line">httpd_setrlimit --&gt; off</div><div class="line">httpd_ssi_exec --&gt; off</div><div class="line">httpd_tmp_exec --&gt; off</div><div class="line">httpd_tty_comm --&gt; on</div><div class="line">httpd_unified --&gt; off</div><div class="line">httpd_use_cifs --&gt; off</div><div class="line">httpd_use_gpg --&gt; off</div><div class="line">httpd_use_nfs --&gt; off</div></pre></td></tr></table></figure>
+
+<p>发现 httpd_can_network_connect_db —&gt; off</p>
+<h2 id="解决方案">解决方案</h2>
+<p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/sbin/setsebool -P httpd_can_network_connect_db on</div></pre></td></tr></table></figure></p>
+<h2 id="参考网站">参考网站</h2>
+<p><a href="http://blog.sina.com.cn/s/blog_8882a6260101ed0p.html" target="_blank" rel="external">Can’t connect to MySQL server on ‘XXX’ (13)</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="问题">问题</h2>
+<p>wordpress更换服务器后，出现can’t connect to MySQL server using ‘’ (13)的错误，<br>结果是 SELinux 不让 httpd 访问外网，一开始还以为是iptables造成的，关闭之]]>
+    </summary>
+    
+      <category term="mysql" scheme="http://wutill.com/tags/mysql/"/>
+    
+      <category term="selinux" scheme="http://wutill.com/tags/selinux/"/>
+    
+      <category term="mysql" scheme="http://wutill.com/categories/mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[yum 安装出错 skip-broken]]></title>
+    <link href="http://wutill.com/2015/01/29/skip-broken/"/>
+    <id>http://wutill.com/2015/01/29/skip-broken/</id>
+    <published>2015-01-29T03:17:02.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="安装依赖包出错">安装依赖包出错</h2>
+<p>  提示<br>  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">You could <span class="keyword">try</span> <span class="keyword">using</span> --skip-broken to work around the problem</div><div class="line">You could <span class="keyword">try</span> running: rpm -Va --nofiles --nodigest</div></pre></td></tr></table></figure></p>
+<p>  安装的依赖包和现有的冲突，不能发现新的包</p>
+<h2 id="解决办法">解决办法</h2>
+<p>  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">rpm -e --allmatches --nodeps pcre</div><div class="line">--allmatches</div><div class="line">  删除所有那些包匹配PACKAGE_NAME的版本。如果PACKAGE_NAME有多个匹配，正常情况下将有一个错误说明。</div><div class="line">--nodeps</div><div class="line">   在没有安装包之前，不检测依赖关系。</div></pre></td></tr></table></figure><br>  强制删除所有的包，然后安装新的依赖。问题解决。<br>  网上有人说，如果对删除包，再安装也许会对之前依赖相关包的软件有影响，所以谨慎操作。</p>
+<h2 id="其他方法">其他方法</h2>
+<p>   <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">原因：多个库共存冲突   </div><div class="line">在执行命令后面加上：</div><div class="line">--setopt=protected_multilib=<span class="keyword">false</span> </div></pre></td></tr></table></figure><br>   未曾尝试，不过也有上述的隐患。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="安装依赖包出错">安装依赖包出错</h2>
+<p>  提示<br>  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div cl]]>
+    </summary>
+    
+      <category term="linux" scheme="http://wutill.com/tags/linux/"/>
+    
+      <category term="yum" scheme="http://wutill.com/tags/yum/"/>
+    
+      <category term="linux" scheme="http://wutill.com/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[php基础问题汇总]]></title>
+    <link href="http://wutill.com/2015/01/27/php-doc/"/>
+    <id>http://wutill.com/2015/01/27/php-doc/</id>
+    <published>2015-01-27T03:26:23.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="使用remi及epel源升级php">使用remi及epel源升级php</h2>
+<p>  安装remi及epel源</p>
+<p> 1，下载并安装epel源# </p>
+<p>rpm -iUh <a href="http://mirror.bjtu.edu.cn/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://mirror.bjtu.edu.cn/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</a><br>ps:sohu的也可以<br><a href="http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm" target="_blank" rel="external">http://mirrors.sohu.com/fedora-epel/6/x86_64/epel-release-6-8.noarch.rpm</a>  </p>
+<p> 2，下载并安装remi源# </p>
+<p>rpm -Uvh <a href="http://rpms.famillecollet.com/enterprise/remi-release-6.rpm" target="_blank" rel="external">http://rpms.famillecollet.com/enterprise/remi-release-6.rpm</a>  </p>
+<p>关于epel:如果既想获得 RHEL 的高质量、高性能、高可靠性，又需要方便易用(关键是免费)的软件包更新功能，那么 Fedora Project 推出的 EPEL(Extra Packages for Enterprise Linux)正好适合你。EPEL(<a href="http://fedoraproject.org/wiki/EPEL" target="_blank" rel="external">http://fedoraproject.org/wiki/EPEL</a>) 是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目</p>
+<p>关于remi:remi软件源对旧的fedora版本提供最新的软件支持，也可以为Centos及RHEL提供最新的软件</p>
+<p>3，安装php</p>
+<p>yum —enablerepo=remi install php php-cli php-mysql php-gd php-imap php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-mcrypt php-mssql php-snmp php-soap php-tidy php-common php-devel php-fpm</p>
+<h2 id="_使用webtatic源升级php"> 使用webtatic源升级php</h2>
+<p>1，安装webtatic源</p>
+<p>rpm -Uvh <a href="http://repo.webtatic.com/yum/centos/5/latest.rpm" target="_blank" rel="external">http://repo.webtatic.com/yum/centos/5/latest.rpm</a>  </p>
+<p>关于webtatic：主要供应最新LAMP等软件源, 支持Cent OS5,6 。这个源 Cent OS 5.x 可以选择 php 5.2 或者 php 5.3.<br>,2，安装php,</p>
+<p>yum —enablerepo=webtatic install php php-*   (如yum —enablerepo=webtatic install php php-5.3)</p>
+<h2 id="参考网站">参考网站</h2>
+<p><a href="http://www.hczm.cn/post/index/id/135" target="_blank" rel="external">CentOS5使用Yum安装PHP5.3的两种方法</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="使用remi及epel源升级php">使用remi及epel源升级php</h2>
+<p>  安装remi及epel源</p>
+<p> 1，下载并安装epel源# </p>
+<p>rpm -iUh <a href="http://mirror.bjtu.edu.c]]>
+    </summary>
+    
+      <category term="php" scheme="http://wutill.com/tags/php/"/>
+    
+      <category term="web" scheme="http://wutill.com/categories/web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[linux 缓存 buffer tmpfs]]></title>
+    <link href="http://wutill.com/2015/01/26/linux-%E7%BC%93%E5%AD%98-buffer-tmpfs/"/>
+    <id>http://wutill.com/2015/01/26/linux-缓存-buffer-tmpfs/</id>
+    <published>2015-01-26T06:19:46.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="共享内存">共享内存</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">cat /proc/sys/kernel/shmmax  <span class="comment">// 定义了共享内存段的最大尺寸（以字节为单位）</span></div><div class="line"><span class="number">68719476736</span>/<span class="number">1024</span>/<span class="number">1024</span>/<span class="number">1024</span>  <span class="comment">//64G centos6 X 64 默认</span></div><div class="line">cat /proc/sys/kernel/shmmin  用于设置系统范围内共享内存段的最大数量。该参数的默认值是 <span class="number">4096</span> 。通常不需要更改。（有的说是单个段允许使用的最小共享内存大小 存疑）</div><div class="line"><span class="number">4096</span></div><div class="line">cat /proc/sys/kernel/shmall  表示系统一次可以使用的共享内存总量（以页为单位）。（有的说是全部允许使用的共享内存大小，单位是页,可以通过getconf PAGESIZE来获取每页的大小，一般为<span class="number">4096</span>字节 存疑，因为换算后的值还没有MAX的大）</div><div class="line"><span class="number">4294967296</span></div><div class="line">ipcs -l 可以查看相关内容</div></pre></td></tr></table></figure>
+
+<h2 id="/dev/shm">/dev/shm</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">   /dev/shm是linux非常有用的一个目录，它就是所谓的tmpfs，也可以称之为临时文件系统（不是块设备），类似oracle中的临时表空间一样，用于加速和优化系统。该目录并没有放在磁盘上，而上在内存当中。因此在linux下，不用大费周折的去建ramdisk，直接使用/dev/shm就可以达到很好的效果。</div><div class="line">       Tmpfs和ramdisk（虚拟磁盘）。Tmpfs可以使用RAM，也可以使用交换分区来进行存储。传统的ramdisk（虚拟磁盘）是个块设备，并且需要mkfs之类的命令之后才可以真正的使用它。Tmpfs是一个文件系统，不是块设备，系统默认启动就会加载/dev/shm，只要安装它就可以使用了。</div><div class="line">       Tmpfs优势。</div><div class="line"><span class="number">1.</span>    动态文件系统的大小</div><div class="line"><span class="number">2.</span>    读写速度快。典型的tmpfs文件系统会完全驻留在RAM中，读写几乎是瞬间完成。</div><div class="line"><span class="number">3.</span>    Tmpfs中的数据在重新启动之后不会保留，因为虚拟内存本质上是易失的，所以有必要做些脚本做诸如加载、绑定的操作。</div><div class="line"></div><div class="line">coreOS 个别目录放在了tmpfs上</div></pre></td></tr></table></figure>
+
+<h2 id="linux_cache_and_buffer">linux cache and buffer</h2>
+<p><a href="http://blog.csdn.net/turkeyzhou/article/details/6426738" target="_blank" rel="external">linux cache and buffer</a></p>
+<p>待续，暂存于此</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="共享内存">共享内存</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><]]>
+    </summary>
+    
+      <category term="内核" scheme="http://wutill.com/tags/%E5%86%85%E6%A0%B8/"/>
+    
+      <category term="linux" scheme="http://wutill.com/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[如何解决TIME_WAIT过多的解决办法]]></title>
+    <link href="http://wutill.com/2015/01/25/%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3TIME_WAIT%E8%BF%87%E5%A4%9A%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
+    <id>http://wutill.com/2015/01/25/如何解决TIME_WAIT过多的解决办法/</id>
+    <published>2015-01-25T15:35:34.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://www.360doc.com/content/11/0411/10/5082680_108773802.shtml" target="_blank" rel="external">如何解决TIME_WAIT过多的解决办法</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://www.360doc.com/content/11/0411/10/5082680_108773802.shtml" target="_blank" rel="external">如何解决TIME_WAIT过多的解决办法</a></p>
+]]>
+    </summary>
+    
+      <category term="nginx" scheme="http://wutill.com/tags/nginx/"/>
+    
+      <category term="内核" scheme="http://wutill.com/tags/%E5%86%85%E6%A0%B8/"/>
+    
+      <category term="linux" scheme="http://wutill.com/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[nginx 缓存测试]]></title>
+    <link href="http://wutill.com/2015/01/25/nginx-%E7%BC%93%E5%AD%98%E6%B5%8B%E8%AF%95/"/>
+    <id>http://wutill.com/2015/01/25/nginx-缓存测试/</id>
+    <published>2015-01-25T08:35:34.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[]]></content>
+    <summary type="html">
+    <![CDATA[]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[转战hexo]]></title>
+    <link href="http://wutill.com/2015/01/23/hexo/"/>
+    <id>http://wutill.com/2015/01/23/hexo/</id>
+    <published>2015-01-23T05:43:11.000Z</published>
+    <updated>2015-07-16T09:19:08.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="为什么用hexo">为什么用hexo</h2>
+<p>因为<a href="http://hexo.io/" title="hexo" target="_blank" rel="external">hexo</a>比较符合我的审美标准，也许作者是台湾的原因吧。<br>  一个坑，备份的时候，没有备份pacman theme,最后发现需要删除 .git<br>if you want to back up with your theme,just add theme: your theme name in _config.yml.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">backup:</div><div class="line">    type: git</div><div class="line">    theme: pacman</div><div class="line">    repository:</div><div class="line">       github: git@github.com:xxx/xxx.git,branchName</div><div class="line">       gitcafe: git@github.com:xxx/xxx.git,branchName</div><div class="line">Attention: <span class="keyword">if</span> you <span class="keyword">do</span> as above, the dir themes/pacman/.gitwill be removed</div><div class="line">再备份也需要删除 根目录.git</div></pre></td></tr></table></figure>
+
+
+<h2 id="命令">命令</h2>
+<p>常用命令</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">hexo <span class="keyword">new</span> <span class="string">"postName"</span> <span class="preprocessor">#新建文章</span></div><div class="line">hexo <span class="keyword">new</span> page <span class="string">"pageName"</span> <span class="preprocessor">#新建页面</span></div><div class="line">hexo generate <span class="preprocessor">#生成静态页面至public目录</span></div><div class="line">hexo server <span class="preprocessor">#开启预览访问端口（默认端口4000，'ctrl + c'关闭server）</span></div><div class="line">hexo deploy <span class="preprocessor">#将.deploy目录部署到GitHub</span></div></pre></td></tr></table></figure><br>常用复合命令：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo deploy -g</div><div class="line">hexo server -g</div></pre></td></tr></table></figure><br>简写<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">hexo n == hexo <span class="keyword">new</span></div><div class="line">hexo g == hexo generate</div><div class="line">hexo s == hexo server</div><div class="line">hexo d == hexo deploy</div></pre></td></tr></table></figure>
+
+<h2 id="备份">备份</h2>
+<p><a href="https://github.com/coneycode/hexo-git-backup" target="_blank" rel="external">hexo-git-backup</a></p>
+<h2 id="常见问题">常见问题</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">删除右边错误的标签</div><div class="line">保险起见 删除db.json 删除 source下 tags下的相应标签</div><div class="line">多个标签 [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3.</span>...]</div><div class="line"></div><div class="line">hexo2<span class="number">.83</span> 用<span class="number">3.0</span>有问题</div></pre></td></tr></table></figure>
+
+<h2 id="参考网站">参考网站</h2>
+<p><a href="http://ibruce.info/2013/11/22/hexo-your-blog/" target="_blank" rel="external">hexo你的博客</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="为什么用hexo">为什么用hexo</h2>
+<p>因为<a href="http://hexo.io/" title="hexo" target="_blank" rel="external">hexo</a>比较符合我的审美标准，也许作者是台湾的原因吧。<b]]>
+    </summary>
+    
+      <category term="hexo" scheme="http://wutill.com/tags/hexo/"/>
+    
+      <category term="web" scheme="http://wutill.com/categories/web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[github 搭建 octopress]]></title>
+    <link href="http://wutill.com/2015/01/22/oct/"/>
+    <id>http://wutill.com/2015/01/22/oct/</id>
+    <published>2015-01-22T13:36:18.000Z</published>
+    <updated>2015-07-16T09:06:18.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="网上教程很多，我只说坑">网上教程很多，我只说坑</h3>
+<ul>
+<li>申请github项目的时候，项目名字必须是username.github.io的样式，最初没发现，郁闷了半天</li>
+<li>申请了github-page，必须在<a href="https://github.com/settings/emails" target="_blank" rel="external">https://github.com/settings/emails</a>，邮件确认，否则无效，会收到很多报错邮件</li>
+<li>win下用网上的办法，问题多多，一怒之下，把win下目录共享到虚拟机上，用Linux提交，问题解决</li>
+<li><p>Linux下需要安装nodejs，否则报下面的错误，git版本要升级到新版本</p>
+<blockquote>
+<p>error: The requested URL returned error: 401 Unauthorized while accessing <a href="https://github.com/zemo/demo.git/info/refs" target="_blank" rel="external">https://github.com/zemo/demo.git/info/refs</a></p>
+<p>fatal: HTTP request failed</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>参考文章</strong></p>
+<p><a href="http://www.jianshu.com/p/0ac2ac1a8e45" target="_blank" rel="external">http://www.jianshu.com/p/0ac2ac1a8e45</a></p>
+<p><a href="http://xuhehuan.com/783.html" target="_blank" rel="external">http://xuhehuan.com/783.html</a></p>
+<p><a href="http://www.pchou.info/web-build/2014/07/04/build-github-blog-page-08.html" target="_blank" rel="external">http://www.pchou.info/web-build/2014/07/04/build-github-blog-page-08.html</a></p>
+<p><a href="http://nkcoder.github.io/blog/20140105/github-pages-and-octopress-blog-built/" target="_blank" rel="external">http://nkcoder.github.io/blog/20140105/github-pages-and-octopress-blog-built/</a></p>
+<p><a href="http://www.itzhoulin.com/deploy-a-blog-using-octopress-hosted-in-github/" target="_blank" rel="external">http://www.itzhoulin.com/deploy-a-blog-using-octopress-hosted-in-github/</a></p>
+<p><a href="http://www.tuicool.com/articles/63QfIfv" target="_blank" rel="external">http://www.tuicool.com/articles/63QfIfv</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h3 id="网上教程很多，我只说坑">网上教程很多，我只说坑</h3>
+<ul>
+<li>申请github项目的时候，项目名字必须是username.github.io的样式，最初没发现，郁闷了半天</li>
+<li>申请了github-page，必须在<a href="ht]]>
+    </summary>
+    
+      <category term="web" scheme="http://wutill.com/categories/web/"/>
+    
+  </entry>
+  
+</feed>
