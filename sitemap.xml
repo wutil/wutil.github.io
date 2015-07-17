@@ -12,6 +12,16 @@
   </url>
   
   <url>
+    <loc>http://wutill.com/about/index.html</loc>
+    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://wutill.com/2015/01/26/linux-%E7%BC%93%E5%AD%98-buffer-tmpfs/</loc>
+    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://wutill.com/2015/01/25/nginx-%E7%BC%93%E5%AD%98%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2015-07-16T09:06:18.000Z</lastmod>
   </url>
@@ -22,17 +32,17 @@
   </url>
   
   <url>
-    <loc>http://wutill.com/2015/01/26/linux-%E7%BC%93%E5%AD%98-buffer-tmpfs/</loc>
-    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://wutill.com/2015/01/27/php-doc/</loc>
     <lastmod>2015-07-16T09:06:18.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://wutill.com/2015/01/29/Can-t-connect-to-MySQL-server/</loc>
+    <loc>http://wutill.com/about/index-1.html</loc>
+    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://wutill.com/2015/01/29/strace/</loc>
     <lastmod>2015-07-16T09:06:18.000Z</lastmod>
   </url>
   
@@ -42,7 +52,7 @@
   </url>
   
   <url>
-    <loc>http://wutill.com/2015/01/29/strace/</loc>
+    <loc>http://wutill.com/2015/01/29/Can-t-connect-to-MySQL-server/</loc>
     <lastmod>2015-07-16T09:06:18.000Z</lastmod>
   </url>
   
@@ -53,16 +63,6 @@
   
   <url>
     <loc>http://wutill.com/tags/index.html</loc>
-    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://wutill.com/about/index-1.html</loc>
-    <lastmod>2015-07-16T09:06:18.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://wutill.com/about/index.html</loc>
     <lastmod>2015-07-16T09:06:18.000Z</lastmod>
   </url>
   
