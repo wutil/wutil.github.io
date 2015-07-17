@@ -4,15 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>树莓派安装bypy百度云同步客户端 | 无题 . 磊磊</title>
+    <title>树莓派安装bypy百度云python客户端 | 无题 . 磊磊</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="LeiLei">
     
     <meta name="description" content="前因
-  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。
+  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。百度云Python客户端
 代码
-1234IP=`ifconfig|grep &quot;inet &quot; | cut -d: -f2 | awk &#39;{print $">
+1234IP=`ifconfig|grep &quot;inet &quot; | cut -d: -f2 | a">
     
     
     
@@ -71,7 +71,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/07/16/bypy/" title="树莓派安装bypy百度云同步客户端" itemprop="url">树莓派安装bypy百度云同步客户端</a>
+      <a href="/2015/07/16/bypy/" title="树莓派安装bypy百度云python客户端" itemprop="url">树莓派安装bypy百度云python客户端</a>
   </h1>
   <p class="article-author">By
     
@@ -79,7 +79,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-07-16T09:06:36.000Z" itemprop="datePublished">2015年07月16日</time>
-    更新日期:<time datetime="2015-07-16T09:41:31.000Z" itemprop="dateModified">2015年07月16日</time>
+    更新日期:<time datetime="2015-07-17T01:20:27.000Z" itemprop="dateModified">2015年07月17日</time>
     
   </p>
 </header>
@@ -92,7 +92,7 @@
 		</div>
 		
 		<h2 id="前因">前因</h2>
-<p>  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用<br>Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。</p>
+<p>  树莓派作为移动小系统，IP经常来回变动，每次扫描其MAC地址，也可以得到IP，但是我想用<br>Python写得百度客户端，每次开机启动把IP同步到百度云上，作为一个尝试。<br><a href="https://github.com/houtianze/bypy" target="_blank" rel="external">百度云Python客户端</a></p>
 <h2 id="代码">代码</h2>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">IP=`ifconfig|grep "inet " | cut -d: -f2 | awk '{print $1}' | grep -v "^127."` </div><div class="line">echo "" &gt;/data/ip/$IP.txt</div><div class="line">/usr/bin/python  /data/bypy/bypy.py upload /data/ip/  &gt;&gt;/tmp/test    </div><div class="line">以上代码加到 /etc/rc.local exit 0前面</div></pre></td></tr></table></figure>
 
@@ -101,7 +101,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">*WARNING*: Cannot detect the system encoding, assume it's 'UTF-8'</div><div class="line">Token file: '//.bypy/bypy.json'</div><div class="line">Hash Cache file: '//.bypy/bypy.pickle'</div><div class="line">App root path at Baidu Yun '/apps/bypy'</div><div class="line">sys.stdin.encoding = None</div><div class="line">sys.stdout.encoding = None</div><div class="line">sys.stderr.encoding = ANSI_X3.4-1968</div><div class="line">----</div><div class="line"></div><div class="line">&lt;E&gt; [13:13:52] Error while loading baidu pcs token:</div><div class="line">&lt;E&gt; [13:13:52] Traceback (most recent call last):</div><div class="line">  File "/data/bypy/bypy.py", line 1480, in __load_local_json</div><div class="line">    with open(TokenFilePath, 'rb') as infile:</div><div class="line">IOError: [Errno 2] No such file or directory: u'//.bypy/bypy.json'</div><div class="line"></div><div class="line">Please visit:</div><div class="line">https://openapi.baidu.com/oauth/2.0/authorize?scope=basic+netdisk&amp;redirect_uri=oob&amp;response_type=code&amp;client_id=q8WE4EpCsau1oS</div><div class="line">And authorize this app</div><div class="line">Paste the Authorization Code here within 10 minutes.</div><div class="line">Press [Enter] when you are done</div><div class="line">&lt;E&gt; [13:13:52] Exception occurred:</div><div class="line">Traceback (most recent call last):</div><div class="line">  File "/data/bypy/bypy.py", line 3421, in main</div><div class="line">    verbose = args.verbose, debug = args.debug)</div><div class="line">  File "/data/bypy/bypy.py", line 1172, in __init__</div><div class="line">    result = self.__auth()</div><div class="line">  File "/data/bypy/bypy.py", line 1592, in __auth</div><div class="line">    return self.__server_auth()</div><div class="line">  File "/data/bypy/bypy.py", line 1556, in __server_auth</div><div class="line">    auth_code = ask(msg).strip()</div><div class="line">  File "/data/bypy/bypy.py", line 363, in askc</div><div class="line">    return raw_input()</div><div class="line">EOFError: EOF when reading a line</div></pre></td></tr></table></figure>
 
 <h2 id="解决">解决</h2>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TokenFilePath = ConfigDir + os.sep + 'bypy.json'</div><div class="line">HashCachePath = ConfigDir + os.sep + 'bypy.pickle'</div><div class="line">改为</div><div class="line">TokenFilePath = '/root/.bypy/bypy.json'</div><div class="line">HashCachePath = '/root/.bypy/bypy.pickle'</div></pre></td></tr></table></figure>  
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">TokenFilePath = ConfigDir + os.sep + 'bypy.json'</div><div class="line">HashCachePath = ConfigDir + os.sep + 'bypy.pickle'</div><div class="line">改为</div><div class="line">TokenFilePath = '/root/.bypy/bypy.json'</div><div class="line">HashCachePath = '/root/.bypy/bypy.pickle'</div></pre></td></tr></table></figure>      
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -120,7 +120,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://wutill.com/2015/07/16/bypy/" data-title="树莓派安装bypy百度云同步客户端 | 无题 . 磊磊" data-tsina="null" class="share clearfix">
+  <div data-url="http://wutill.com/2015/07/16/bypy/" data-title="树莓派安装bypy百度云python客户端 | 无题 . 磊磊" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
